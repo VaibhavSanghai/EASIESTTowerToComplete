@@ -7,6 +7,7 @@ var engine, world;
 var ground; 
 var polygon, polygonImg;
 var score = 0; 
+var bg = "white"; 
 
 function preload(){
     polygonImg = loadImage("polygon.png"); 
@@ -42,17 +43,21 @@ function setup() {
     World.add(world, polygon); 
     
     //Attaching slingshot
-    slingShot = new SlingShot(this.polygon, {x: 100, y: 200}); 
+    slingShot = new SlingShot(this.polygon, {x: 100, y: 200});
+    
+    fetchTime();
 }
 
 function draw() {
-    background("white"); 
+    if(bg)
+    
+    background(bg); 
 
     //Updating engine
     Engine.update(engine); 
     strokeWeight(4); 
 
-    text("SCORE: " + score, 750, 40); 
+    text("SCORE: " + score, 700, 40); 
 
     imageMode(CENTER); 
     image(polygonImg, polygon.position.x, polygon.position.y, 50, 50);
@@ -92,4 +97,18 @@ function mouseDragged() {
 
 function mouseReleased() {
     slingShot.fly(this.polygon); 
+}
+
+async function fetchTime() {
+    var response = await fetch('http://worldtimeapi.org/api/timezone/Asia/Kolkata');
+    var responseJSON = await response.json(); 
+
+    var time = responseJSON.datetime;
+    var hour = time.slice(11, 13);
+
+    if (hour > 6 && hour < 18) {
+        bg = "white"; 
+    } else {
+        bg = "cyan"; 
+    }
 }
